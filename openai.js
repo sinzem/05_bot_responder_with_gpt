@@ -1,6 +1,6 @@
-import OpenAI from "openai";
-import config from "config";
-import fs from "fs";
+require('dotenv').config();
+const fs = require("fs");
+const OpenAI = require("openai");
 
 class OpenAi {
 
@@ -29,15 +29,11 @@ class OpenAi {
     async transcription(filePath) {
         console.log(filePath);
         try {
-            // const response = await this.openai.createTranscription(
-            //     createReadStream(filePath),
-            //     "whisper-1"
-            // );
             const response = await openai.audio.transcriptions.create({
                 file: fs.createReadStream(filePath),
                 model: "whisper-1",
             });
-            // console.log(response);
+           
             return response.text;
         } catch (e) {
             console.log(`Error while transcription`, e.message);
@@ -45,5 +41,5 @@ class OpenAi {
     }
 }
 
-export const openai = new OpenAi(config.get("OPENAI_KEY"));
+module.exports = new OpenAi(process.env.OPENAI_KEY);
 
